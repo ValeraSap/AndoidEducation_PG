@@ -35,10 +35,6 @@ public class GsonFlickrFetchrDeserializer {
 	}
 
 
-	// :[{"id":"50841441203","owner":"135718488@N03","secret":"e1eeee2e51","server":"65535","farm":66,"title":"IMG_2649",
-	// "ispublic":1,"isfriend":0,"isfamily":0,"url_s":"https:\/\/live.staticflickr.com\/65535\/50841441203_e1eeee2e51_m.jpg",
-	// "height_s":135,"width_s":240},
-
 	public static void deserialize(List<GalleryItem> items, String jsonString) {
 
 		Root root=new Gson().fromJson(jsonString,Root.class);
