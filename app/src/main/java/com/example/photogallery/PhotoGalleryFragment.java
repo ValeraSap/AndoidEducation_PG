@@ -1,5 +1,7 @@
 package com.example.photogallery;
 
+import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Insets;
 import android.graphics.drawable.BitmapDrawable;
@@ -62,6 +64,7 @@ public class PhotoGalleryFragment extends Fragment {
 		setHasOptionsMenu(true);
 
 		updateItems();
+
 		Handler responseHandler=new Handler();
 		mThumbnailDownloader=new ThumbnailDownloader<>(responseHandler);
 		mThumbnailDownloader.setThumbnailDownloadListener(
@@ -148,14 +151,27 @@ public class PhotoGalleryFragment extends Fragment {
 				searchView.setQuery(query, false);
 			}
 		});
+
+		MenuItem toggleItem = menu.findItem(R.id.menu_item_toggle_polling);
+		if(PollService.isServiceAlarmOn(getActivity())) {
+			toggleItem.setTitle(R.string.stop_polling);
+		}else {
+			toggleItem.setTitle(R.string.start_polling);
+		}
 	}
 
+	@SuppressLint("NonConstantResourceId") //todo find out what does it mean
 	@Override
 	public boolean onOptionsItemSelected(@NonNull MenuItem item) {
 		switch (item.getItemId()) {
 			case R.id.menu_item_clear:
 				QueryPreferences.setStoredQuery(getActivity(),null);
 				updateItems();
+				return true;
+			case R.id.menu_item_toggle_polling:
+				boolean shouldStartAlarm = !PollService.isServiceAlarmOn(getActivity());
+				PollService.setServiceAlarm(getActivity(),shouldStartAlarm);
+				getActivity().invalidateOptionsMenu();
 				return true;
 			default: return super.onOptionsItemSelected(item);
 		}
@@ -208,6 +224,8 @@ public class PhotoGalleryFragment extends Fragment {
 		protected void onPostExecute(List<GalleryItem> galleryItems) {
 			Parcelable recyclerViewState=null;
 			//todo подрузка страниц с фото из запроса
+			//mItems=galleryItems;
+
 			if(mItems.size()==0 || mQuery!=null) { //будет трудно листать дальше запросные фото
 				mItems=galleryItems;
 			}
@@ -221,6 +239,8 @@ public class PhotoGalleryFragment extends Fragment {
 			setupAdapter();
 			if(recyclerViewState != null)
 				mPhotoRecyclerView.getLayoutManager().onRestoreInstanceState(recyclerViewState); //востановление состояния
+
+
 		}
 
 	}
