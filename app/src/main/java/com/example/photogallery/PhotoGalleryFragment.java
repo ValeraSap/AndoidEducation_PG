@@ -39,7 +39,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PhotoGalleryFragment extends Fragment {
+public class PhotoGalleryFragment extends VisibleFragment {
 	//ccb0056779a8e6dd223387a47a9c8449
 
 	private static final String TAG = "PhotoGalleryFragment";
